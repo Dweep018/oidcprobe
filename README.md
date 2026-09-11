@@ -127,4 +127,4 @@ MIT
 
 ## Responsible Use
 
-This tool is for authorized security testing and hardening verification only. Always obtain written permission before testing any target.
+This tool is for authorized security testing and hardening verification only. Always obtain permission before testing any target.
