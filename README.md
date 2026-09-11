@@ -2,8 +2,6 @@
 
 Automatically verifies that OIDC/OAuth2 endpoints enforce input bounds on parameters like `login_hint`, `username`, and `redirect_uri` — before an attacker tests them for you.
 
-Inspired by a confirmed and fixed security issue in Keycloak where unbounded username input caused 127x log amplification per unauthenticated request — see [keycloak/keycloak#50903](https://github.com/keycloak/keycloak/issues/50903).
-
 ---
 
 ## Modules
@@ -11,25 +9,23 @@ Inspired by a confirmed and fixed security issue in Keycloak where unbounded use
 | Module | Flag | What it tests |
 |---|---|---|
 | Account Enumeration | `enumeration` | Timing, size, redirect, and error message differences for valid vs fake accounts |
-| Input Sanitization | `sanitization` | XSS, CRLF injection, ANSI escape sequences, null byte injection via login_hint |
-| Parameter Bounds | `bounds` | Input length limits, log amplification, response time growth at 255 → 124,000 chars |
-| redirect_uri Validation | `redirect` | 14 redirect_uri mutations covering subdomain confusion, path traversal, encoded tricks, parameter pollution |
+| Input Sanitization | `sanitization` | XSS, CRLF injection (CWE-93), ANSI escape sequences (CWE-117), null byte injection via `login_hint` |
+| Parameter Bounds | `bounds` | Input length limits, log amplification (>10x to 127x via CWE-400), response time growth at 255 → 124,000 chars |
+| redirect_uri Validation | `redirect` | 14 `redirect_uri` mutations covering subdomain confusion, path traversal, encoded tricks, parameter pollution |
 
 ---
 
 ## Installation
 
 ```bash
-git clone https://github.com/Dweep018/oidcprobe
+git clone [https://github.com/Dweep018/oidcprobe](https://github.com/Dweep018/oidcprobe)
 cd oidcprobe
 pip install -r requirements.txt
-```
 
 ---
 
 ## Usage
 
-```bash
 # Full scan
 python oidcprobe.py --target https://<target>/authorize --client-id myclient
 
@@ -39,12 +35,12 @@ python oidcprobe.py --target https://<target>/authorize --client-id myclient --e
 # With redirect URI (enables redirect_uri validation)
 python oidcprobe.py --target https://<target>/authorize \
   --client-id myclient \
-  --redirect-uri https://app.example.com/callback
+  --redirect-uri [https://app.example.com/callback](https://app.example.com/callback)
 
 # Full scan with all options
 python oidcprobe.py --target https://<target>/authorize \
   --client-id myclient \
-  --redirect-uri https://app.example.com/callback \
+  --redirect-uri [https://app.example.com/callback](https://app.example.com/callback) \
   --email user@company.com \
   -o report.json
 
@@ -56,7 +52,6 @@ python oidcprobe.py --target https://<target>/authorize -t YOUR_TOKEN
 
 # Custom headers
 python oidcprobe.py --target https://<target>/authorize -H "X-Custom: value"
-```
 
 ---
 
@@ -104,10 +99,16 @@ Live findings per module as confirmed, with severity, evidence string, and fix r
 
 ## Real-World Background
 
-The Parameter Bounds module directly models [keycloak/keycloak#50903](https://github.com/keycloak/keycloak/issues/50903) — a confirmed bug where submitting ~124,000 characters in the username field caused Keycloak's log file to grow from 34KB to 161KB in a single unauthenticated request (127x amplification). The fix was released in Keycloak 26.8.0.
+`oidcprobe` originates from original security research disclosed via Keycloak's bug bounty program on **YesWeHack** (awarded 3 reputation points), focusing on pre-authentication parameter hardening across identity protocol layers. 
 
-oidcprobe tests the same class of vulnerability across any OIDC/OAuth2 provider.
+Core maintainers opened six dedicated upstream tracking issues based on these findings:
 
+* **[#50903](https://github.com/keycloak/keycloak/issues/50903):** Uncontrolled Resource Consumption (CWE-400) where ~124,000 characters in the username field caused 127x log amplification per unauthenticated request (fixed in Keycloak 26.8.0).
+* **[#46736](https://github.com/keycloak/keycloak/issues/46736) & [#46740](https://github.com/keycloak/keycloak/issues/46740):** CRLF Injection (CWE-93) and audit log forgery via unvalidated parameters like `kc_idp_hint`.
+* **[#47681](https://github.com/keycloak/keycloak/issues/47681) & [#46747](https://github.com/keycloak/keycloak/issues/46747):** ANSI Control Sequence Injection (CWE-117) enabling visual log tampering and forensic evasion.
+* **[#40857](https://github.com/keycloak/keycloak/issues/40857):** Session cookie (`KC_RESTART`) header size overflow inducing authentication loop denial-of-service.
+
+`oidcprobe` automates the detection of these exact vulnerability classes across any OIDC/OAuth2 provider.
 ---
 
 ## Roadmap
