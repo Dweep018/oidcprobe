@@ -21,7 +21,7 @@ from rich import box
 from rich.text import Text
 
 from modules import EnumerationModule, SanitizationModule, BoundsModule, RedirectModule
-from reports import generate_json_report
+from json_report import generate_json_report
 
 console = Console()
 
