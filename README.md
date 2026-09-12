@@ -2,7 +2,6 @@
 
 Automatically verifies that OIDC/OAuth2 endpoints enforce input bounds on parameters like `login_hint`, `username`, and `redirect_uri` — before an attacker tests them for you.
 
----
 
 ## Modules
 
@@ -13,7 +12,7 @@ Automatically verifies that OIDC/OAuth2 endpoints enforce input bounds on parame
 | Parameter Bounds | `bounds` | Input length limits, log amplification (>10x to 127x via CWE-400), response time growth at 255 → 124,000 chars |
 | redirect_uri Validation | `redirect` | 14 `redirect_uri` mutations covering subdomain confusion, path traversal, encoded tricks, parameter pollution |
 
----
+
 
 ## Installation
 
@@ -21,11 +20,12 @@ Automatically verifies that OIDC/OAuth2 endpoints enforce input bounds on parame
 git clone [https://github.com/Dweep018/oidcprobe](https://github.com/Dweep018/oidcprobe)
 cd oidcprobe
 pip install -r requirements.txt
+```
 
 ---
 
 ## Usage
-
+```
 # Full scan
 python oidcprobe.py --target https://<target>/authorize --client-id myclient
 
@@ -52,7 +52,7 @@ python oidcprobe.py --target https://<target>/authorize -t YOUR_TOKEN
 
 # Custom headers
 python oidcprobe.py --target https://<target>/authorize -H "X-Custom: value"
-
+```
 ---
 
 ## Severity Scoring
