@@ -101,12 +101,14 @@ Live findings per module as confirmed, with severity, evidence string, and fix r
 
 `oidcprobe` originates from original security research disclosed via Keycloak's bug bounty program on **YesWeHack** (awarded 3 reputation points), focusing on pre-authentication parameter hardening across identity protocol layers. 
 
-Core maintainers opened six dedicated upstream tracking issues based on these findings:
+As a direct result of the YesWeHack report, Keycloak maintainers opened three upstream tracking issues:
+- **[#46736](https://github.com/keycloak/keycloak/issues/46736) & [#46740](https://github.com/keycloak/keycloak/issues/46740):** CRLF Injection (CWE-93) and audit log forgery via unvalidated parameters.
+- **[#46747](https://github.com/keycloak/keycloak/issues/46747):** Parameter handling and input sanitization validation.
 
-* **[#50903](https://github.com/keycloak/keycloak/issues/50903):** Uncontrolled Resource Consumption (CWE-400) where ~124,000 characters in the username field caused 127x log amplification per unauthenticated request (fixed in Keycloak 26.8.0).
-* **[#46736](https://github.com/keycloak/keycloak/issues/46736) & [#46740](https://github.com/keycloak/keycloak/issues/46740):** CRLF Injection (CWE-93) and audit log forgery via unvalidated parameters like `kc_idp_hint`.
-* **[#47681](https://github.com/keycloak/keycloak/issues/47681) & [#46747](https://github.com/keycloak/keycloak/issues/46747):** ANSI Control Sequence Injection (CWE-117) enabling visual log tampering and forensic evasion.
-* **[#40857](https://github.com/keycloak/keycloak/issues/40857):** Session cookie (`KC_RESTART`) header size overflow inducing authentication loop denial-of-service.
+Additional related tracking issues were subsequently created by myself on Keycloak's GitHub:
+- **[#50903](https://github.com/keycloak/keycloak/issues/50903):** Uncontrolled Resource Consumption (CWE-400) where ~124,000 characters in the username field caused 127x log amplification per unauthenticated request (fixed in Keycloak 26.8.0).
+- **[#47681](https://github.com/keycloak/keycloak/issues/47681):** ANSI Control Sequence Injection (CWE-117) enabling visual log tampering and forensic evasion.
+- **[#40857](https://github.com/keycloak/keycloak/issues/40857):** Session cookie (`KC_RESTART`) header size overflow inducing authentication loop denial-of-service.
 
 `oidcprobe` automates the detection of these exact vulnerability classes across any OIDC/OAuth2 provider.
 ---
